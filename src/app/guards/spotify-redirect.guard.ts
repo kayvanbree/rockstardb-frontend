@@ -1,7 +1,5 @@
-import {Inject, Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot} from '@angular/router';
-import {HttpClient} from '@angular/common/http';
-import {SpotifyConfig} from '../definitions/spotify-config';
 import {UpdateAuthenticationTokens} from '../store/actions/authentication.actions';
 import {Store} from '@ngxs/store';
 
@@ -9,30 +7,32 @@ import {Store} from '@ngxs/store';
   providedIn: 'root'
 })
 export class SpotifyRedirectGuard implements CanActivate {
-  constructor(
-    private http: HttpClient,
-    @Inject('SpotifyConfig') private config: SpotifyConfig,
-    private store: Store,
-    private router: Router,
-  ) {}
+  constructor(private store: Store) {}
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    if (!route.queryParams) {
+    if (!route.fragment) {
       return true;
     }
 
-    const code = route.queryParams.code;
+    let accessToken;
+    let tokenType;
+    let expiresIn;
 
-    this.http.get(`${this.config.f10kApiBase}/auth/login?code=${code}`).subscribe((value: any) => {
-      console.log(value);
-      this.store.dispatch(new UpdateAuthenticationTokens(
-        value.access_token,
-        value.refresh_token,
-        value.expires_in
-      ));
-    });
+    for (const fragment of route.fragment.split('&')) {
+      const frags = fragment.split('=');
+      if (frags[0] === 'access_token') {
+        accessToken = frags[1];
+      }
+      if (frags[0] === 'token_type') {
+        tokenType = frags[1];
+      }
+      if (frags[0] === 'expires_in') {
+        expiresIn = frags[1];
+      }
+    }
 
-    this.router.navigate(['/']);
+    this.store.dispatch(new UpdateAuthenticationTokens(accessToken, tokenType, expiresIn));
+
     return true;
   }
 }

@@ -1,32 +1,29 @@
 import {Inject, Injectable} from '@angular/core';
 import {SpotifyConfig} from '../../definitions/spotify-config';
-import {UpdateAuthenticationTokens} from '../actions/authentication.actions';
-import {HttpClient} from '@angular/common/http';
-import {Store} from '@ngxs/store';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SpotifyAuthenticationService {
+  static tokenKey = 'ngx-spotify-token';
+
   constructor(
-    @Inject('SpotifyConfig') private config: SpotifyConfig,
-    private http: HttpClient,
-    private store: Store,
+    @Inject('SpotifyConfig') private config: SpotifyConfig
   ) { }
+
+  getToken(): string {
+    return localStorage.getItem(SpotifyAuthenticationService.tokenKey);
+  }
 
   login() {
     const params = {
       client_id: this.config.clientId,
       redirect_uri: this.config.redirectUri,
       scope: this.config.scope || '',
-      response_type: 'code'
+      response_type: 'token'
     };
 
     window.location.href = `${this.config.authorizationUrl}?${this.toQueryString(params)}`;
-  }
-
-  refreshLogin(token: string) {
-    return this.http.get(`${this.config.f10kApiBase}/auth/refresh?token=${token}`);
   }
 
   private toQueryString(obj: any): string {

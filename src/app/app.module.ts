@@ -60,7 +60,6 @@ const spotifyConfig = {
   authToken: localStorage.getItem('angular2-spotify-token'),
   apiBase: environment.apiBase,
   authorizationUrl: environment.authorizationUrl,
-  f10kApiBase: environment.f10kApiBase,
 };
 
 @NgModule({
