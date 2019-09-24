@@ -2,6 +2,7 @@ import {Component, EventEmitter, Input, OnChanges, OnInit, Output} from '@angula
 import {SpotifyEntityModel} from '../../store/entities/spotify-entity.model';
 import {DataSource} from '@angular/cdk/table';
 import {PagedDataSource} from '../../datasources/paged-data-source';
+import {RockstardbEntityModel} from '../../store/entities/rockstardb-entity.model';
 
 @Component({
   selector: 'app-virtual-scroll-list',
@@ -12,7 +13,7 @@ export class VirtualScrollListComponent implements OnInit, OnChanges {
   /**
    * The dataSource this list subscribes to
    */
-  @Input() dataSource: PagedDataSource<SpotifyEntityModel>;
+  @Input() dataSource: PagedDataSource<RockstardbEntityModel>;
 
   /**
    * The displayed colums.

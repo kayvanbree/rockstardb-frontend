@@ -2,9 +2,8 @@ import {Component, OnInit} from '@angular/core';
 import {Store} from '@ngxs/store';
 import {ArtistModel} from '../../store/entities/artist.model';
 import {Router} from '@angular/router';
-import {SpotifyEntityService} from '../../store/providers/spotify-entity.service';
-import {EntityDataSource} from '../../datasources/entity-data-source';
-import {CollectionState} from '../../store/states/collection.state';
+import {RockstardbArtistDatasource} from '../../datasources/rockstardb-artist-datasource';
+import {RockstardbEntityService} from '../../store/providers/rockstardb-entity.service';
 
 @Component({
   selector: 'app-artists-page',
@@ -12,19 +11,17 @@ import {CollectionState} from '../../store/states/collection.state';
   styleUrls: ['./artists-page.component.scss']
 })
 export class ArtistsPageComponent implements OnInit {
-  public dataSource: EntityDataSource;
+  public dataSource: RockstardbArtistDatasource;
   public pageSize = 50;
 
   constructor(
     private store: Store,
     private router: Router,
-    private entityService: SpotifyEntityService,
+    private entityService: RockstardbEntityService,
   ) {}
 
   public ngOnInit(): void {
-    this.store.select(CollectionState.artists).subscribe((value) => {
-      this.dataSource = new EntityDataSource(this.entityService, value, 'artist', this.pageSize);
-    });
+    this.dataSource = new RockstardbArtistDatasource<ArtistModel>(this.entityService, 'artist', this.pageSize);
   }
 
   public onRowDoubleClick(event: ArtistModel): void {

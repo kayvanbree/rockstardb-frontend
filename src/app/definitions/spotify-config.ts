@@ -5,4 +5,5 @@ export interface SpotifyConfig {
   authToken?: string;
   apiBase: string;
   authorizationUrl: string;
+  rockstardbApiBase: string;
 }
